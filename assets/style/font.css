@@ -1,0 +1,85 @@
+@charset 'utf-8';
+
+/* Pretendard */
+@font-face {
+    font-family: "Pretendard";
+    src: url(../font/PretendardVariable.ttf) format("truetype");
+}
+
+/* Paperlogy */
+@font-face {
+    font-family: "Paperlogy";
+    font-weight: 400;
+    src: url(../font/Paperlogy-4Regular.ttf) format("truetype");
+}
+@font-face {
+    font-family: "Paperlogy";
+    font-weight: 500;
+    src: url(../font/Paperlogy-5Medium.ttf) format("truetype");
+}
+@font-face {
+    font-family: "Paperlogy";
+    font-weight: 600; 
+    src: url(../font/Paperlogy-6SemiBold.ttf) format("truetype");
+}
+@font-face {
+    font-family: "Paperlogy";
+    font-weight: 700;
+    src: url(../font/Paperlogy-7Bold.ttf) format("truetype");
+}
+@font-face {
+    font-family: "Paperlogy";
+    font-weight: 800;
+    src: url(../font/Paperlogy-8ExtraBold.ttf) format("truetype");
+}
+
+/* 나눔고딕(누리고딕 대체) */
+
+@font-face {
+    font-family: "NanumGothic";
+    src: url(../font/NanumGothic.otf) format("opentype");
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: "NanumGothic";
+    src: url(../font/NanumGothicBold.otf) format("opentype");
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: "NanumGothic";
+    src: url(../font/NanumGothicExtraBold.otf) format("opentype");
+    font-weight: 800;
+}
+
+/* 네이버 마루 부리 글꼴*/
+@font-face {
+    font-family: "MaruBuri-4";
+    src: url(../font/MaruBuri-Light.ttf) format("truetype");
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: "MaruBuri-5";
+    src: url(../font/MaruBuri-Regular.ttf) format("truetype");
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: "MaruBuri-6";
+    src: url(../font/MaruBuri-SemiBold.ttf) format("truetype");
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: "MaruBuri-7";
+    src: url(../font/MaruBuri-Bold.ttf) format("truetype");
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: "MaruBuri-8";
+    src: url(../font/MaruBuri-ExtraLight.ttf) format("truetype");
+    font-weight: 800;
+}
