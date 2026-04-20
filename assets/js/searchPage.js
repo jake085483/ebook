@@ -1,6 +1,8 @@
 /* 특정 페이지번호 입력 시 해당 페이지로 이동에 관한 기능 */
 const pageInput = document.getElementById("page-search");
 const pageBtn = document.querySelector(".page-search-btn");
+const pageResetBtn = document.querySelector(".page-reset");
+
 function goToPage() {
     const pageNum = Number(pageInput.value);
 
@@ -19,3 +21,7 @@ pageInput.addEventListener("keydown", (e) => {
         goToPage();
     }
 });
+
+pageResetBtn.addEventListener("click", () => {
+    pageInput.value = "";
+})
