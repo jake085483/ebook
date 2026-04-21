@@ -1,9 +1,9 @@
-/* 단어 검색 기능 - 단순 버전 */
+/* 단어 검색 기능 */
 
 /* =========================
   1. 필요한 요소 가져오기
 ========================= */
-const wordInput = document.getElementById("word-search");
+const wordInput = document.querySelector(".word-search");
 const wordSearchBtn = document.querySelector(".word-search-btn");
 const wordPrevBtn = document.querySelector(".word-prev-btn");
 const wordNextBtn = document.querySelector(".word-next-btn");
@@ -102,65 +102,83 @@ function resetWordSearch() {
 ========================= */
 
 function highlightPage(page, keyword) {
+  // 검색어를 정규식으로 변환 (대소문자 무시, 공백 대응 등)
   const regex = makeRegex(keyword);
 
+  // 페이지 안의 "텍스트 노드만" 순회하기 위한 도구
   const walker = document.createTreeWalker(
-    page,
-    NodeFilter.SHOW_TEXT,
-    null
+    page,                      // 기준 요소 (이 페이지 안에서만 검색)
+    NodeFilter.SHOW_TEXT,      // 텍스트 노드만 탐색
+    null                       // 필터 없음
   );
 
-  const textNodes = [];
+  const textNodes = []; // 검색어가 포함된 텍스트 노드 저장
 
+  // 모든 텍스트 노드 순회
   while (walker.nextNode()) {
     const node = walker.currentNode;
 
-    // 빈 텍스트 제외
+    // 공백만 있는 텍스트는 제외
     if (!node.nodeValue.trim()) continue;
 
-    // script / style 제외
+    // script / style 안의 텍스트는 제외
+    // 텍스트들만 가져와서 그 텍스트의 태그
     const parentTag = node.parentNode.nodeName;
     if (parentTag === "SCRIPT" || parentTag === "STYLE") continue;
 
-    // 이미 강조된 span 안은 제외
+    // 이미 하이라이트 된 span 안은 제외 (중복 방지)
     const parentClass = node.parentNode.classList;
     if (parentClass && (parentClass.contains("search-highlight") || parentClass.contains("current-highlight"))) {
       continue;
     }
 
+    // 초기화
     regex.lastIndex = 0;
+
+    // 검색어가 포함된 텍스트 노드만 따로 저장
     if (regex.test(node.nodeValue)) {
       textNodes.push(node);
     }
   }
 
+  // 실제 하이라이트 적용
   textNodes.forEach((textNode) => {
     const text = textNode.nodeValue;
+
+    // DOM을 직접 건드리기 전에 임시 공간 생성
     const fragment = document.createDocumentFragment();
 
     regex.lastIndex = 0;
-    let lastIndex = 0;
-    let match;
 
+    let lastIndex = 0;
+    let match = '';
+
+    // 텍스트 검색어를 찾음 있으면 또 실행 없으면 종료
     while ((match = regex.exec(text)) !== null) {
+
+      // 검색어 앞 텍스트
       const before = text.slice(lastIndex, match.index);
       if (before) {
         fragment.appendChild(document.createTextNode(before));
       }
 
+      // 검색어 부분 → span으로 감싸기
       const span = document.createElement("span");
       span.className = "search-highlight";
       span.textContent = match[0];
       fragment.appendChild(span);
 
+      // 다음 탐색 시작 위치 업데이트
       lastIndex = match.index + match[0].length;
     }
 
+    // 마지막 검색어 이후 텍스트
     const after = text.slice(lastIndex);
     if (after) {
       fragment.appendChild(document.createTextNode(after));
     }
 
+    // 기존 텍스트 노드를 fragment로 교체
     textNode.parentNode.replaceChild(fragment, textNode);
   });
 }
@@ -175,6 +193,7 @@ function searchWord() {
   // 입력이 비었으면 검색 대신 초기화
   if (!keyword) {
     resetWordSearch();
+    alert("단어를 입력해주세요.")
     return;
   }
 
@@ -201,6 +220,8 @@ function searchWord() {
         order: index
       });
     });
+
+    console.log(results);
   });
 
   if (results.length === 0) {
@@ -231,7 +252,7 @@ function moveToResult(index) {
 
   currentIndex = index;
 
-  // 이전 현재 강조 제거
+  // 강조 제거
   document.querySelectorAll(".current-highlight").forEach((el) => {
     el.classList.remove("current-highlight");
     el.classList.add("search-highlight");
@@ -242,7 +263,7 @@ function moveToResult(index) {
   nowPage = target.page;
   showPage(nowPage);
 
-  const currentPage = document.querySelector(`.page-${target.page}`);
+  const currentPage = document.querySelector(`.page-${nowPage}`);
   if (!currentPage) {
     updateCount();
     return;
@@ -263,52 +284,79 @@ function moveToResult(index) {
   9. 현재 페이지 기준 다음/이전 찾기
 ========================= */
 
+// 현재 페이지(nowPage)에 해당하는 첫 번째 결과의 index 찾기
 function findFirstResultInCurrentPage() {
+  // findIndex: 조건에 맞는 첫 번째 요소의 index 반환 (없으면 -1)
   return results.findIndex((item) => item.page === nowPage);
 }
 
+
+// 현재 페이지(nowPage)에 해당하는 마지막 결과의 index 찾기
 function findLastResultInCurrentPage() {
+  // 배열의 뒤에서부터 탐색 (마지막 요소부터)
   for (let i = results.length - 1; i >= 0; i--) {
+    // 현재 페이지와 같은 값이면 바로 index 반환
     if (results[i].page === nowPage) return i;
   }
+  // 없으면 -1 반환
   return -1;
 }
 
+
+// "다음"으로 이동할 index 계산
 function getNextIndex() {
+  // 현재 index가 유효하고, 현재 페이지에 속한 경우
   if (
-    currentIndex !== -1 &&
-    results[currentIndex] &&
-    results[currentIndex].page === nowPage
+    currentIndex !== -1 &&                 // 현재 index가 존재하고
+    results[currentIndex] &&               // 해당 index에 값이 있고
+    results[currentIndex].page === nowPage // 현재 페이지와 동일하다면
   ) {
+    // 같은 페이지 내에서 다음 요소로 이동
     return currentIndex + 1;
   }
 
+  // 현재 페이지의 첫 번째 요소 찾기
   const firstInPage = findFirstResultInCurrentPage();
   if (firstInPage !== -1) return firstInPage;
+  // 현재 페이지에 데이터가 있다면 첫 번째로 이동
 
+  // 현재 페이지보다 "뒤 페이지" 중 가장 먼저 나오는 index 찾기
   const nextPageIndex = results.findIndex((item) => item.page > nowPage);
   if (nextPageIndex !== -1) return nextPageIndex;
+  // 다음 페이지로 이동
 
+  // 모든 조건에 해당 안 되면 (마지막 페이지 이후)
   return 0;
+  // 처음으로 돌아감 (순환 구조)
 }
 
+
+// "이전"으로 이동할 index 계산
 function getPrevIndex() {
+  // 현재 index가 유효하고, 현재 페이지에 속한 경우
   if (
     currentIndex !== -1 &&
     results[currentIndex] &&
     results[currentIndex].page === nowPage
   ) {
+    // 같은 페이지 내에서 이전 요소로 이동
     return currentIndex - 1;
   }
 
+  // 현재 페이지의 마지막 요소 찾기
   const lastInPage = findLastResultInCurrentPage();
   if (lastInPage !== -1) return lastInPage;
+  // 현재 페이지에 데이터가 있다면 마지막으로 이동
 
+  // 현재 페이지보다 "앞 페이지" 중 가장 뒤에 있는 index 찾기
   for (let i = results.length - 1; i >= 0; i--) {
     if (results[i].page < nowPage) return i;
   }
+  // 이전 페이지로 이동
 
+  // 모든 조건에 해당 안 되면 (첫 페이지 이전)
   return results.length - 1;
+  // 마지막으로 이동 (순환 구조)
 }
 
 /* =========================
