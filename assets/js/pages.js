@@ -218,7 +218,7 @@ const pageInfo = [
     title: "국립중앙도서관 2026년 ebook 부록/참고자료",
     description: [
       { type: "text", content: "안녕하세요" },
-      { type: "img", file: "img1.png" },
+      { type: "img", file: "refresh.png" },
       { type: "video", file: "video1.mp4" },
       { type: "text", content: "GPT입니다." }
     ]
@@ -231,7 +231,7 @@ const pageInfo = [
     description: [
       { type: "text", content: "안녕하세요" },
       { type: "text", content: "GPT입니다." },
-      { type: "img", file: "img1.png" },
+      { type: "img", file: "refresh.png" },
       { type: "video", file: "video1.mp4" },
       
     ]
