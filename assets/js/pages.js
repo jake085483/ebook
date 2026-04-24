@@ -216,14 +216,25 @@ const pageInfo = [
     id: 9,
     type: "reference",
     title: "국립중앙도서관 2026년 ebook 부록/참고자료",
-    description: "(video) refresh.mp4"
+    description: [
+      { type: "text", content: "안녕하세요" },
+      { type: "img", file: "img1.png" },
+      { type: "video", file: "video1.mp4" },
+      { type: "text", content: "GPT입니다." }
+    ]
   },
 
   {
     id: 10,
     type: "outro",
     title: "국립중앙도서관 2026년",
-    description: "(img) refresh.png",
+    description: [
+      { type: "text", content: "안녕하세요" },
+      { type: "text", content: "GPT입니다." },
+      { type: "img", file: "img1.png" },
+      { type: "video", file: "video1.mp4" },
+      
+    ]
     
   }
   
@@ -279,27 +290,21 @@ function parseMedia(description) {
 function createPageSection(page, index) {
   const section = document.createElement("section");
 
-  // 공통 section 클래스
   section.classList.add("page", `page-${page.id}`);
 
-  // 첫 페이지 제외 hide
   if (index !== 0) {
     section.classList.add("hide");
   }
 
-  // 공통 제목
   if (page.title) {
     const h2 = document.createElement("h2");
     h2.innerHTML = page.title;
-    h2.classList.add("section-title")
+    h2.classList.add("section-title");
     section.appendChild(h2);
   }
 
-  // description 안의 (video), (img) 파싱
-  const media = parseMedia(page.description);
-
   // =========================
-  // type: index (목차)
+  // type: index 목차
   // =========================
   if (page.type === "index") {
     if (page.content && page.content.length > 0) {
@@ -309,7 +314,7 @@ function createPageSection(page, index) {
   }
 
   // =========================
-  // type: summary (요약/정리)
+  // type: summary 요약/정리
   // =========================
   else if (page.type === "summary") {
     if (page.description && page.description.length > 0) {
@@ -319,23 +324,31 @@ function createPageSection(page, index) {
   }
 
   // =========================
-  // description: (video) xxx.mp4
+  // description 배열 처리
+  // [{ type: "text" }, { type: "img" }, { type: "video" }]
   // =========================
-  else if (media && media.type === "video") {
-    const video = document.createElement("video");
-    video.src = `./assets/mp4/${media.file}`;
-    video.controls = true;
-    section.appendChild(video);
-  }
+  else if (Array.isArray(page.description)) {
+    page.description.forEach((item) => {
+      if (item.type === "text") {
+        const p = document.createElement("p");
+        p.innerHTML = item.content || "";
+        section.appendChild(p);
+      }
 
-  // =========================
-  // description: (img) xxx.png
-  // =========================
-  else if (media && media.type === "img") {
-    const img = document.createElement("img");
-    img.src = `./assets/images/${media.file}`;
-    img.alt = page.title || "";
-    section.appendChild(img);
+      else if (item.type === "img") {
+        const img = document.createElement("img");
+        img.src = `./assets/images/${item.file}`;
+        img.alt = item.alt || page.title || "";
+        section.appendChild(img);
+      }
+
+      else if (item.type === "video") {
+        const video = document.createElement("video");
+        video.src = `./assets/mp4/${item.file}`;
+        video.controls = true;
+        section.appendChild(video);
+      }
+    });
   }
 
   // =========================
