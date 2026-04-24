@@ -280,7 +280,7 @@ function createPageSection(page, index) {
   const section = document.createElement("section");
 
   // 공통 section 클래스
-  section.classList.add("page", `page-${page.id}`, `${page.type}`);
+  section.classList.add("page", `page-${page.id}`);
 
   // 첫 페이지 제외 hide
   if (index !== 0) {
@@ -408,10 +408,16 @@ function renderPages() {
   main.innerHTML = "";
 
   // pageInfo를 기준으로 section.page 생성
-  pageInfo.forEach((page, index) => {
+  /* pageInfo.forEach((page, index) => {
     const section = createPageSection(page, index);
     main.appendChild(section);
-  });
+  }); */
+
+
+  // pageInfo 배열의 각 페이지에 대해 섹션을 생성하여 sections 배열에 저장
+  const sections = pageInfo.map((page, index) => createPageSection(page, index));
+  // 생성된 모든 섹션을 메인 요소에 추가
+  main.append(...sections);
 }
 
 /* =========================

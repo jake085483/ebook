@@ -221,7 +221,7 @@ function searchWord() {
       });
     });
 
-    console.log(results);
+    /* console.log(results); */
   });
 
   if (results.length === 0) {
@@ -304,81 +304,53 @@ function findLastResultInCurrentPage() {
 
 
 // "다음"으로 이동할 index 계산
-function getNextIndex() {
-  // 현재 index가 유효하고, 현재 페이지에 속한 경우
-  if (
-    currentIndex !== -1 &&                 // 현재 index가 존재하고
-    results[currentIndex] &&               // 해당 index에 값이 있고
-    results[currentIndex].page === nowPage // 현재 페이지와 동일하다면
-  ) {
-    // 같은 페이지 내에서 다음 요소로 이동
-    return currentIndex + 1;
-  }
+function getAdjacentIndex(direction) {
+  const step = direction === "next" ? 1 : -1;
 
-  // 현재 페이지의 첫 번째 요소 찾기
-  const firstInPage = findFirstResultInCurrentPage();
-  if (firstInPage !== -1) return firstInPage;
-  // 현재 페이지에 데이터가 있다면 첫 번째로 이동
-
-  // 현재 페이지보다 "뒤 페이지" 중 가장 먼저 나오는 index 찾기
-  const nextPageIndex = results.findIndex((item) => item.page > nowPage);
-  if (nextPageIndex !== -1) return nextPageIndex;
-  // 다음 페이지로 이동
-
-  // 모든 조건에 해당 안 되면 (마지막 페이지 이후)
-  return 0;
-  // 처음으로 돌아감 (순환 구조)
-}
-
-
-// "이전"으로 이동할 index 계산
-function getPrevIndex() {
   // 현재 index가 유효하고, 현재 페이지에 속한 경우
   if (
     currentIndex !== -1 &&
     results[currentIndex] &&
     results[currentIndex].page === nowPage
   ) {
-    // 같은 페이지 내에서 이전 요소로 이동
-    return currentIndex - 1;
+    return currentIndex + step;
   }
 
-  // 현재 페이지의 마지막 요소 찾기
-  const lastInPage = findLastResultInCurrentPage();
-  if (lastInPage !== -1) return lastInPage;
-  // 현재 페이지에 데이터가 있다면 마지막으로 이동
+  if (direction === "next") {
+    // 현재 페이지의 첫 번째 요소
+    const firstInPage = findFirstResultInCurrentPage();
+    if (firstInPage !== -1) return firstInPage;
 
-  // 현재 페이지보다 "앞 페이지" 중 가장 뒤에 있는 index 찾기
-  for (let i = results.length - 1; i >= 0; i--) {
-    if (results[i].page < nowPage) return i;
+    // 다음 페이지 중 가장 먼저 나오는 index
+    const nextPageIndex = results.findIndex((item) => item.page > nowPage);
+    if (nextPageIndex !== -1) return nextPageIndex;
+
+    return 0; // 순환
+  } else {
+    // 현재 페이지의 마지막 요소
+    const lastInPage = findLastResultInCurrentPage();
+    if (lastInPage !== -1) return lastInPage;
+
+    // 이전 페이지 중 가장 뒤에 있는 index
+    for (let i = results.length - 1; i >= 0; i--) {
+      if (results[i].page < nowPage) return i;
+    }
+
+    return results.length - 1; // 순환
   }
-  // 이전 페이지로 이동
-
-  // 모든 조건에 해당 안 되면 (첫 페이지 이전)
-  return results.length - 1;
-  // 마지막으로 이동 (순환 구조)
 }
 
 /* =========================
   10. 다음 / 이전 버튼
 ========================= */
 
-function moveNextMatch() {
+function moveMatch(directions) {
   if (results.length === 0) {
     alert("먼저 검색을 해주세요.");
     return;
   }
 
-  moveToResult(getNextIndex());
-}
-
-function movePrevMatch() {
-  if (results.length === 0) {
-    alert("먼저 검색을 해주세요.");
-    return;
-  }
-
-  moveToResult(getPrevIndex());
+  moveToResult(getAdjacentIndex(directions));
 }
 
 /* =========================
@@ -416,15 +388,15 @@ wordInput.addEventListener("keydown", (e) => {
 
   // 같은 검색어면 Enter = 다음, Shift+Enter = 이전
   if (e.shiftKey) {
-    movePrevMatch();
+    moveMatch("prev");
   } else {
-    moveNextMatch();
+    moveMatch("next");
   }
 });
 
 // 다음 / 이전 버튼
-wordNextBtn.addEventListener("click", moveNextMatch);
-wordPrevBtn.addEventListener("click", movePrevMatch);
+wordNextBtn.addEventListener("click", () => moveMatch("next"));
+wordPrevBtn.addEventListener("click", () => moveMatch("prev"));
 
 // reset 버튼
 wordResetBtn.addEventListener("click", resetWordSearch);

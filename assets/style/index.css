@@ -202,6 +202,11 @@ section.page{
   color: #fff;
 }
 
+.page-wrap{
+  display:flex;
+  gap:8px;
+}
+
 .prev, .next{
   color: #fff;
   font-size: 1.5rem;

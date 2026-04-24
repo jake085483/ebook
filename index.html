@@ -7,44 +7,50 @@
   <link rel="stylesheet" href="./assets/style/index.css">
 </head>
 <body>
+  
   <section class="main-header">
     <div class="move-page-wrap">
       <button class="prev" title="이전"></button>
-      <p class="now-page" tabindex="0"></p>
-      <span class="slash">/</span>
-      <p class="total-page" tabindex="0"></p>
+      <div class="page-wrap">
+        <p class="now-page" tabindex="0"></p>
+        <span class="slash">/</span>
+        <p class="total-page" tabindex="0"></p>
+      </div>
       <button class="next" title="다음"></button>
     </div>
+
     <div class="search-wrapper">
       <div class="page-search-wrap search-wrap">
         <div class="page-input">
           <label for="number" tabindex="0">페이지 입력 :
             <input type="number" id="number" class="search-input page-search" title="이동할 페이지 번호를 입력해주세요." min="1">
           </label>
-          
           <button class="reset page-reset" title="초기화"></button>
         </div>
         <button class="page-search-btn search-btn">이동</button>
       </div>
+
       <span class="divider"></span>
       <div class="word-search-wrap search-wrap">
         <div class="word-input">
           <label for="text" tabindex="0">검색할 단어 입력 :
-
             <input type="text" id="text" class="search-input word-search" title="검색할 단어를 입력해주세요.">
           </label>
-          
           <button class="reset word-reset" title="초기화"></button>
         </div>
-        <button class="word-search-btn search-btn" type="button">검색</button>
-        <button class="word-prev-btn search-btn hide" type="button" title="이전">↑</button>
-        <button class="word-next-btn search-btn hide" type="button" title="다음">↓</button>
+        <div class="search-btn-wrap">
+          <button class="word-search-btn search-btn" type="button">검색</button>
+          <button class="word-prev-btn search-btn hide" type="button" title="이전">↑</button>
+          <button class="word-next-btn search-btn hide" type="button" title="다음">↓</button>
+        </div>
       </div>
+
       <div class="count hide">
         <span class="current-num">0</span>
         <span class="">/</span>
         <span class="total-num">0</span>
       </div>
+
     </div>
   </section>
   <main>
