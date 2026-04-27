@@ -220,7 +220,7 @@ const pageInfo = [
       { type: "text", content: "안녕하세요" },
       { type: "img", file: "refresh.png" },
       { type: "video", file: "video1.mp4" },
-      { type: "text", content: "GPT입니다." }
+      { type: "text", content: "eums입니다." }
     ]
   },
 
@@ -230,7 +230,7 @@ const pageInfo = [
     title: "국립중앙도서관 2026년",
     description: [
       { type: "text", content: "안녕하세요" },
-      { type: "text", content: "GPT입니다." },
+      { type: "text", content: "이음입니다." },
       { type: "img", file: "refresh.png" },
       { type: "video", file: "video1.mp4" },
       
