@@ -218,7 +218,7 @@ const pageInfo = [
     title: "국립중앙도서관 2026년 ebook 부록/참고자료",
     description: [
       { type: "text", content: "안녕하세요" },
-      { type: "img", file: "refresh.png" },
+      { type: "img", file: "refresh.png", alt: "그냥", title: "그냥" },
       { type: "video", file: "video1.mp4" },
       { type: "text", content: "eums입니다." }
     ]
@@ -231,7 +231,7 @@ const pageInfo = [
     description: [
       { type: "text", content: "안녕하세요" },
       { type: "text", content: "이음입니다." },
-      { type: "img", file: "refresh.png" },
+      { type: "img", file: "refresh.png", alt: "그냥", title: "그냥" },
       { type: "video", file: "video1.mp4" },
       
     ]
@@ -339,6 +339,7 @@ function createPageSection(page, index) {
         const img = document.createElement("img");
         img.src = `./assets/images/${item.file}`;
         img.alt = item.alt || page.title || "";
+        img.title = item.title || page.title || "";
         section.appendChild(img);
       }
 

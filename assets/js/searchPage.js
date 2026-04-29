@@ -15,23 +15,11 @@ pageInput.addEventListener("keydown", (e) => {
         e.key === "e" ||
         e.key === "E" ||
         e.key === "+" ||
-        e.key === "-"
+        e.key === "-" ||
+        e.key === "."
     ) {
         e.preventDefault(); // 입력 차단
     }
-});
-
-// input: 값 보정
-pageInput.addEventListener("input", (e) => {
-    let value = e.target.value;
-
-    // 숫자와 .만 허용
-    value = value.replace(/[^0-9.]/g, "");
-
-    // .은 하나만 허용
-    value = value.replace(/(\..*)\./g, "$1");
-
-    e.target.value = value;
 });
 
 function goToPage() {
@@ -39,15 +27,6 @@ function goToPage() {
 
     // 빈값이면 그냥 종료 (원하면 1페이지로 보내도록 바꿀 수도 있음)
     if (inputValue === "") {
-        return;
-    }
-
-    // 특수문자가 하나라도 있으면 1페이지로 이동
-    // 숫자와 마이너스(-)만 허용
-    if (/[^0-9-]/.test(inputValue)) {
-        nowPage = 1;
-        pageInput.value = 1;
-        showPage(nowPage);
         return;
     }
 

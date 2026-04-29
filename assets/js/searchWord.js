@@ -52,16 +52,20 @@ function showSearchUI() {
   countWrap.classList.remove("hide");
 }
 
-// 정규식 특수문자 처리
-function escapeRegExp(text) {
-  return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-
 // 검색어 안 공백도 유연하게 처리
-function makeRegex(keyword) {
-  const safeText = escapeRegExp(keyword.trim());
+/* function makeRegex(keyword) {
+  const safeText = keyword.trim();
   const spaceFlexibleText = safeText.replace(/\s+/g, "\\s+");
   return new RegExp(spaceFlexibleText, "gi");
+} */
+
+/* 원래와 다르게 23스페이스바 23스페이스바스페이스바 검색 가능하게 */
+function makeRegex(keyword) {
+  if (keyword === "") return null;
+
+  const safeText = keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+  return new RegExp(safeText, "g");
 }
 
 /* =========================
@@ -119,7 +123,8 @@ function highlightPage(page, keyword) {
     const node = walker.currentNode;
 
     // 공백만 있는 텍스트는 제외
-    if (!node.nodeValue.trim()) continue;
+    /* if (!node.nodeValue.trim()) continue; */
+    if (!node.nodeValue) continue;
 
     // script / style 안의 텍스트는 제외
     // 텍스트들만 가져와서 그 텍스트의 태그
@@ -146,6 +151,8 @@ function highlightPage(page, keyword) {
     const text = textNode.nodeValue;
 
     // DOM을 직접 건드리기 전에 임시 공간 생성
+    /* DocumentFragment 객체는 가상의 메모리 공간에 존재하는 일시적인 DOM 조각으로
+    원하는 메인 DOM 트리 위치에 직접 추가(혹은 삽입)해야 웹 페이지에서 표시 */
     const fragment = document.createDocumentFragment();
 
     regex.lastIndex = 0;
@@ -188,7 +195,8 @@ function highlightPage(page, keyword) {
 ========================= */
 
 function searchWord() {
-  const keyword = wordInput.value.trim();
+  /* const keyword = wordInput.value.trim(); */
+  const keyword = wordInput.value;
 
   // 입력이 비었으면 검색 대신 초기화
   if (!keyword) {
@@ -362,7 +370,11 @@ wordSearchBtn.addEventListener("click", searchWord);
 
 // 입력값이 완전히 비워지면 자동 초기화
 wordInput.addEventListener("input", () => {
-  if (wordInput.value.trim() === "") {
+  /* if (wordInput.value.trim() === "") {
+    resetWordSearch();
+  } */
+
+  if (wordInput.value === "") {
     resetWordSearch();
   }
 });
@@ -373,7 +385,8 @@ wordInput.addEventListener("keydown", (e) => {
 
   e.preventDefault();
 
-  const inputKeyword = wordInput.value.trim();
+  /* const inputKeyword = wordInput.value.trim(); */
+  const inputKeyword = wordInput.value;
 
   if (!inputKeyword) {
     resetWordSearch();
